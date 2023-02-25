@@ -1,0 +1,21 @@
+<div class="d-flex flex-column h-100 justify-content-between">
+  <div class="w-100">
+    <ng-container *ngxPermissionsOnly="['user:list']">
+      <button mat-flat-button routerLink="user">Usuários</button>
+      <mat-divider></mat-divider>
+    </ng-container>
+
+    <ng-container *ngxPermissionsOnly="['group:list']">
+      <button mat-flat-button routerLink="group">Grupos</button>
+      <mat-divider></mat-divider>
+    </ng-container>
+
+    <button mat-flat-button routerLink="select-user" *ngxPermissionsExcept="['user:list']">Selecionar usuário</button>
+    <mat-divider></mat-divider>
+  </div>
+
+  <div class="w-100">
+    <mat-divider></mat-divider>
+    <button mat-flat-button (click)="removePermissions()">Remover permissões</button>
+  </div>
+</div>
