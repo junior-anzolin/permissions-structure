@@ -10,11 +10,16 @@ import { ConfirmModule } from 'src/app/shared/components/confirm/confirm.module'
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { HandleGroupComponent } from './handle-group/handle-group.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [GroupComponent, HandleGroupComponent],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     GroupRoutingModule,
     MatButtonModule,
     MatIconModule,
@@ -22,6 +27,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     ConfirmModule,
     NgxPermissionsModule.forChild(),
     MatDialogModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
   ],
 })
 export class GroupModule {}
