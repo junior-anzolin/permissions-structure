@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { PermissionsService } from 'src/app/services/permissions.service';
 import { UserService } from 'src/app/services/user.service';
+import { HandlePermissionsComponent } from './handle-permissions/handle-permissions.component';
 import { HandleUserComponent } from './handle-user/handle-user.component';
 import { ListUserDataSource } from './list-user.data-source';
 
@@ -44,6 +45,9 @@ export class UserComponent {
   }
 
   managerPermissions(id: string) {
-    console.log(id);
+    this.dialog.open(HandlePermissionsComponent, {
+      data: { id },
+      autoFocus: false,
+    });
   }
 }

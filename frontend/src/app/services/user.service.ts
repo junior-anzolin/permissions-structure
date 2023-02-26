@@ -24,11 +24,11 @@ export class UserService {
   }
 
   addPermissionOrGroup(id: string, data: any) {
-    this.http.put(`http://localhost:3000/permission/user/${id}`, data);
+    return this.http.put(`http://localhost:3000/permission/user/${id}`, data);
   }
 
   rmPermissionOrGroup(id: string, data: any) {
-    this.http.delete(`http://localhost:3000/permission/user/${id}`, {
+    return this.http.delete(`http://localhost:3000/permission/user/${id}`, {
       body: data,
     });
   }

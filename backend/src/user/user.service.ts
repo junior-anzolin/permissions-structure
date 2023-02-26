@@ -34,7 +34,6 @@ export class UserService {
 
   async update(id: string, user: IUserInsertDTO) {
     const userRegister = await this.get(id);
-    console.log(userRegister);
     if (!userRegister) throw new BadRequestException('Usuário não encontrado');
 
     return await this.userModel.findByIdAndUpdate(id, user);

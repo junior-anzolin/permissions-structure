@@ -12,9 +12,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { HandlePermissionsComponent } from './handle-permissions/handle-permissions.component';
+import { ManagementListModule } from 'src/app/shared/components/management-list/management-list.module';
 
 @NgModule({
-  declarations: [UserComponent, HandleUserComponent],
+  declarations: [
+    UserComponent,
+    HandleUserComponent,
+    HandlePermissionsComponent,
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -26,6 +32,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatDialogModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    ManagementListModule,
   ],
 })
 export class UserModule {}

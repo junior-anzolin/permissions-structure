@@ -1,13 +1,11 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { firstValueFrom, Subscription } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { GroupService } from 'src/app/services/group.service';
+import { IManagementListOptions } from 'src/app/shared/components/management-list/management-list.component';
 import { PERMISSIONS } from 'src/app/shared/permissions.const';
-import {
-  HandleUserComponent,
-  IHandleUserDataDTO,
-} from '../../user/handle-user/handle-user.component';
+import { IHandleUserDataDTO } from '../../user/handle-user/handle-user.component';
 
 export interface IHandleGroupDataDTO {
   id?: string;
@@ -22,28 +20,13 @@ export interface IHandleGroupDataDTO {
         <mat-label>Descrição</mat-label>
         <input matInput type="text" [formControl]="description" />
       </mat-form-field>
-      <mat-form-field class="w-100" appearance="outline">
-        <mat-label>Adicionar regra</mat-label>
-        <mat-select [formControl]="addRule">
-          <mat-option>Selecione</mat-option>
-          <mat-option value="all" *ngIf="options.length">Todas</mat-option>
-          <ng-container *ngFor="let item of options">
-            <mat-option [value]="item">{{ item }}</mat-option>
-          </ng-container>
-        </mat-select>
-      </mat-form-field>
-      <ng-container *ngFor="let item of rules">
-        <div class="row">
-          <div class="col">
-            {{ item }}
-          </div>
-          <div class="col-auto">
-            <button mat-icon-button (click)="rmPermission(item)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </div>
-      </ng-container>
+      <app-management-list
+        title="Permissões"
+        [options]="options"
+        [list]="rules"
+        [showOptionAll]="true"
+        (changeList)="changeRules($event)"
+      ></app-management-list>
     </div>
     <div mat-dialog-actions align="end">
       <ng-container *ngIf="!loading; else Loading">
@@ -61,13 +44,14 @@ export interface IHandleGroupDataDTO {
   `,
   styles: [],
 })
-export class HandleGroupComponent implements OnInit, OnDestroy {
+export class HandleGroupComponent implements OnInit {
   description: FormControl = new FormControl('', Validators.required);
-  addRule: FormControl = new FormControl();
-  rules: string[] = [];
-  options: string[] = PERMISSIONS;
+  rules: IManagementListOptions[] = [];
+  options: IManagementListOptions[] = PERMISSIONS.map((item) => ({
+    label: item,
+    value: item,
+  }));
   private _loading = false;
-  private subscription!: Subscription;
 
   set loading(state: boolean) {
     if (state) {
@@ -89,34 +73,12 @@ export class HandleGroupComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private _data: IHandleUserDataDTO,
-    public dialogRef: MatDialogRef<HandleUserComponent>,
+    public dialogRef: MatDialogRef<HandleGroupComponent>,
     private readonly groupService: GroupService
   ) {}
 
   ngOnInit(): void {
     this.loadData();
-    this.subscription = this.addRule.valueChanges.subscribe((value) => {
-      if (value === 'all') {
-        this.rules = PERMISSIONS;
-      } else {
-        this.rules.push(value);
-      }
-      this.updateOptions();
-      this.addRule.setValue('', { emitEvent: false });
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
-  rmPermission(item: string) {
-    this.rules = this.rules.filter((rule) => rule !== item);
-    this.updateOptions();
-  }
-
-  updateOptions() {
-    this.options = PERMISSIONS.filter((option) => !this.rules.includes(option));
   }
 
   async loadData() {
@@ -127,8 +89,10 @@ export class HandleGroupComponent implements OnInit, OnDestroy {
           this.groupService.get(this.data.id)
         );
         this.description.setValue(data.description);
-        this.rules = data.rules;
-        this.updateOptions();
+        this.rules = data.rules.map((item: any) => ({
+          label: item,
+          value: item,
+        }));
       } catch (e: any) {
         console.error(e);
       }
@@ -144,7 +108,7 @@ export class HandleGroupComponent implements OnInit, OnDestroy {
       try {
         const body = {
           description: this.description.value,
-          rules: this.rules,
+          rules: this.rules.map((item: any) => item.value),
         };
 
         if (!this.data.id) {
@@ -163,5 +127,9 @@ export class HandleGroupComponent implements OnInit, OnDestroy {
 
   getControl(key: string): FormControl {
     return (this.description.get(key) ?? new FormControl()) as FormControl;
+  }
+
+  changeRules(event: IManagementListOptions[]) {
+    this.rules = event;
   }
 }
